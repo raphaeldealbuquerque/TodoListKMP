@@ -185,8 +185,8 @@ val *vm2* \= ServiceLocator.provideTaskViewModel()
 #### 5\) Qual é a principal diferença prática entre factory, single e scoped ?
 
 🔹 1\. factory  
-<img src="./android_factory.gif" width="300" height="200" />
-<img src="./ios_factory.gif" width="300" height="200" />
+<img src="./android_factory.gif" width="300" height="600" />
+<img src="./ios_factory.gif" width="300" height="600" />
 
 🔹 2\. single  
 <img src="./android_single.gif" width="300" height="600" />

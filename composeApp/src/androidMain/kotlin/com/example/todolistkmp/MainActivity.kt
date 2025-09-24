@@ -1,4 +1,4 @@
-package com.example.todolistkmp
+package com.raphaeldealbuquerque.todolistkmp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,8 +9,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.todolistkmp.presentation.components.MainScreen
-import com.example.todolistkmp.presentation.components.StatsScreen
+import com.raphaeldealbuquerque.todolistkmp.presentation.components.MainScreen
+import com.raphaeldealbuquerque.todolistkmp.presentation.components.StatsScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

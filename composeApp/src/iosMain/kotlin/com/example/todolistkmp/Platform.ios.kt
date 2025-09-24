@@ -1,4 +1,4 @@
-package com.example.todolistkmp
+package com.raphaeldealbuquerque.todolistkmp
 
 import platform.UIKit.UIDevice
 

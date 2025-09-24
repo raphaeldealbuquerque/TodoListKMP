@@ -1,9 +1,9 @@
-package com.example.todolistkmp.presentation.viewmodel
+package com.raphaeldealbuquerque.todolistkmp.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.example.todolistkmp.domain.repository.TaskRepository
-import com.example.todolistkmp.model.Task
-import com.example.todolistkmp.randomString
+import com.raphaeldealbuquerque.todolistkmp.domain.repository.TaskRepository
+import com.raphaeldealbuquerque.todolistkmp.model.Task
+import com.raphaeldealbuquerque.todolistkmp.randomString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

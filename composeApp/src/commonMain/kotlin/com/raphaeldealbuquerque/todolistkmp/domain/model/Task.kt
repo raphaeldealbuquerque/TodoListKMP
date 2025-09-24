@@ -1,4 +1,4 @@
-package com.example.todolistkmp.model
+package com.raphaeldealbuquerque.todolistkmp.model
 
 data class Task(
     val id: String,

@@ -1,2 +1,2 @@
-package com.example.todolistkmp.presentation.viewmodel
+package com.raphaeldealbuquerque.todolistkmp.presentation.viewmodel
 

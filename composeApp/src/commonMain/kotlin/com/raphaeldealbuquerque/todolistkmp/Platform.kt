@@ -1,4 +1,4 @@
-package com.example.todolistkmp
+package com.raphaeldealbuquerque.todolistkmp
 
 interface Platform {
     val name: String

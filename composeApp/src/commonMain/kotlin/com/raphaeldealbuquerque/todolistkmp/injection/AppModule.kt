@@ -1,8 +1,8 @@
-package com.example.todolistkmp.injection
+package com.raphaeldealbuquerque.todolistkmp.injection
 
-import com.example.todolistkmp.data.repository.TaskRepositoryImpl
-import com.example.todolistkmp.domain.repository.TaskRepository
-import com.example.todolistkmp.presentation.viewmodel.TaskViewModel
+import com.raphaeldealbuquerque.todolistkmp.data.repository.TaskRepositoryImpl
+import com.raphaeldealbuquerque.todolistkmp.domain.repository.TaskRepository
+import com.raphaeldealbuquerque.todolistkmp.presentation.viewmodel.TaskViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module

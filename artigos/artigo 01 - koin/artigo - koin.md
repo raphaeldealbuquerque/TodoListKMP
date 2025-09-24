@@ -185,11 +185,12 @@ val *vm2* \= ServiceLocator.provideTaskViewModel()
 #### 5\) Qual é a principal diferença prática entre factory, single e scoped ?
 
 🔹 1\. factory  
-![android_factory](./android_factory.gif "android_factory")  
-![ios_factory](./ios_factory.gif "ios_factory")  
+<img src="./android_factory.gif" width="300" height="200" />
+<img src="./ios_factory.gif" width="300" height="200" />
+
 🔹 2\. single  
-![android_single](./android_single.gif "android_single")  
-![ios_single](./ios_single.gif "ios_single")
+<img src="./android_single.gif" width="300" height="200" />
+<img src="./ios_single.gif" width="300" height="200" />
 
 #### 6\) Como seria a criação de testes unitários com Koin ?
 
@@ -434,4 +435,4 @@ Assim, seu código ganha clareza, reuso e facilidade de manutenção em projetos
 * [Documentação oficial do Koin](https://insert-koin.io/?utm_source=chatgpt.com)
 * [Compose Multiplatform Docs](https://www.jetbrains.com/lp/compose-multiplatform/)
 * [Koin no GitHub](https://github.com/InsertKoinIO/koin?utm_source=chatgpt.com)
-* [Exemplo de projeto com Koin \+ KMP \+ compose multiplatform (GitHub)](https://github.com/raphaeldealbuquerque)
+* [Exemplo de projeto com Koin \+ KMP \+ compose multiplatform (GitHub)](https://github.com/raphaeldealbuquerque/TodoListKMP)

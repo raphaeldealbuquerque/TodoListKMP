@@ -1,4 +1,4 @@
-package com.example.todolistkmp.navigation
+package com.raphaeldealbuquerque.todolistkmp.navigation
 
 sealed class Screens(val route: String) {
     data object Tasks : Screens("tasks")

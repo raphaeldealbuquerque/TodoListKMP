@@ -1,4 +1,4 @@
-package com.example.todolistkmp.presentation.components
+package com.raphaeldealbuquerque.todolistkmp.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,8 +30,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.todolistkmp.model.Task
-import com.example.todolistkmp.presentation.viewmodel.TaskViewModel
+import com.raphaeldealbuquerque.todolistkmp.model.Task
+import com.raphaeldealbuquerque.todolistkmp.presentation.viewmodel.TaskViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 

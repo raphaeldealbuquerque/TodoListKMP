@@ -189,8 +189,8 @@ val *vm2* \= ServiceLocator.provideTaskViewModel()
 <img src="./ios_factory.gif" width="300" height="200" />
 
 🔹 2\. single  
-<img src="./android_single.gif" width="300" height="200" />
-<img src="./ios_single.gif" width="300" height="200" />
+<img src="./android_single.gif" width="300" height="600" />
+<img src="./ios_single.gif" width="300" height="600" />
 
 #### 6\) Como seria a criação de testes unitários com Koin ?
 

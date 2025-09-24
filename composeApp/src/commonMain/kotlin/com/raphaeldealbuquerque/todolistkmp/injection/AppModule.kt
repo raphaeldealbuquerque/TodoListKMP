@@ -12,6 +12,6 @@ val appModule = module {
     factory<TaskRepository>(named("factory")) { TaskRepositoryImpl() }
 
     viewModel<TaskViewModel> {
-        TaskViewModel(repository = get(named("factory")))
+        TaskViewModel(repository = get(named("single")))
     }
 }

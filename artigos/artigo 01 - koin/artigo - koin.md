@@ -5,26 +5,24 @@
 Quando falamos em **Kotlin Multiplatform (KMP)**, um dos desafios é organizar o código de forma que possamos compartilhar lógica entre diferentes plataformas (Android, iOS).  
 Nesse cenário, o uso de **Injeção de Dependência (DI)** ajuda a manter o projeto escalável, testável e limpo.
 
-Neste artigo, vou mostrar como utilizei o **Koin** em um app simples de **lista de tarefas**, desenvolvido em KMP, para gerenciar dependências como repositórios, use cases e viewmodels.
+Neste artigo, vou mostrar como utilizei o **Koin** em um app simples de **lista de tarefas**, desenvolvido em KMP, para gerenciar dependências como repositories, usecases e viewmodels.
 
 ---
 
 ### **2\. O que é Injeção de Dependência?**
 
-Explicar de forma simples:
-
 * Injeção de Dependência é um padrão de projeto que delega a criação das dependências para um componente externo, em vez de a própria classe instanciá-las. Isso aplica o princípio da Inversão de Dependência, garantindo que módulos dependam de abstrações e não de implementações concretas.
 
 * Benefícios:
 
-  * 🔹 **Desacoplamento**: classes conhecem interfaces/abstrações, não implementações concretas.
-  * 🔹 **Testabilidade**: fica fácil trocar uma implementação real por um mock/fake nos testes.
-  * 🔹 **Composição centralizada**: criação e configuração de objetos fica em um único lugar (modules).
-  * 🔹 **Reuso e manutenção**: mudar implementações (ex: trocar cliente HTTP) sem mexer no código consumidor.
-  * 🔹 **Gerência de ciclo de vida**: o container controla singletons, factories e escopos
-    * **Singleton** → uma instância global criada apenas uma vez.
-    * **Factory** → uma nova instância a cada uso.
-    * **Scoped** → uma instância por ciclo de vida específico (sessão, activity, etc.).
+  * 🔹 **Desacoplamento**: Classes conhecem interfaces/abstrações, não implementações concretas.
+  * 🔹 **Testabilidade**: Fica fácil trocar uma implementação real por um mock/fake nos testes.
+  * 🔹 **Composição centralizada**: Criação e configuração de objetos fica em um único lugar (modules).
+  * 🔹 **Reuso e manutenção**: Mudar implementações (ex: trocar cliente HTTP) sem mexer no código consumidor.
+  * 🔹 **Gerência de ciclo de vida**: O container controla singletons, factories e escopos
+    * **Singleton** → Uma instância global criada apenas uma vez.
+    * **Factory** → Uma nova instância a cada uso.
+    * **Scoped** → Uma instância por ciclo de vida específico (sessão, activity, etc.).
 
 ---
 
@@ -32,18 +30,28 @@ Explicar de forma simples:
 
 ### **3\. Como o koin funciona?**
 
-#### 1\) Módulos e definições (o “grafo”)
+#### 1\) Módulos e definições
 
 * **Módulo** (`module {...}`) é onde você declara *definitions*: `single {...}`, `factory {...}`, `scoped {...}`, `viewModel {...}` etc.
 
 * Cada definição descreve **como construir** um tipo/serviço. O Koin constrói o grafo lendo os módulos na inicialização.
 
-* Dentro das definições você pode usar `get()` para resolver outras dependências declaradas no grafo. [Insert Koin+1](https://insert-koin.io/docs/reference/koin-core/definitions/?utm_source=chatgpt.com)
+* Dentro das definições você pode usar get() para solicitar ao Koin uma instância já registrada no grafo, permitindo compor objetos a partir de suas dependências sem criá-los manualmente.
 
 Exemplo :
 
-| val *appModule* \= *module* {    single\<TaskRepository\> { TaskRepositoryImpl() }    *viewModel*\<TaskViewModel\> {       TaskViewModel(repository \= get\<TaskRepository\>())    } } |
-| :---- |
+```
+val appModule = module {
+    single<TaskRepository> { 
+        TaskRepositoryImpl() 
+    }
+
+    viewModel<TaskViewModel> { 
+        TaskViewModel(repository = get()) 
+    }
+}
+
+```
 
 #### 2\) Inicialização: `startKoin` / `KoinApplication` / GlobalContext
 
@@ -51,20 +59,29 @@ Exemplo :
 
 Exemplo:
 
-| class TaskApp : Application() {    override fun onCreate() {        super.onCreate()        *startKoin* {            *androidContext*(this@TaskApp)            modules(*appModule*)        }    } } |
-| :---- |
+
+```
+class TaskApp : Application() {    
+    override fun onCreate() {        
+        super.onCreate() 
+        startKoin { 
+            androidContext(this@TaskApp)            
+            modules(appModule)        
+        }
+    } 
+}
+```
 
 🔹 **O que acontece aqui**
 
 * startKoin{...} inicializa o container de DI(Dependecy Injection) e registra no **GlobalContext**.
-
 * androidContext(this@TaskApp) esta linha  informa ao Koin qual é o **Context global da aplicação Android**.  
   Com isso, o Koin pode injetar automaticamente qualquer recurso que dependa do Android Framework, como:
-* **SharedPreferences** ou bancos locais que precisam de um Context para serem inicializados.
-* **Recursos do sistema** (ex.: ConnectivityManager, NotificationManager).
-* **Integração com ViewModel do AndroidX**, já que o Koin precisa conhecer o ciclo de vida e o contexto do app.
+  * **SharedPreferences** ou bancos locais que precisam de um Context para serem inicializados.
+  * **Recursos do sistema** (ex.: ConnectivityManager, NotificationManager).
+  * **Integração com ViewModel do AndroidX**, já que o Koin precisa conhecer o ciclo de vida e o contexto do app.
 
-  Em resumo: sem essa linha, o Koin conheceria apenas os módulos puros de Kotlin. Ao passar o androidContext, você conecta o container de DI ao **ambiente Android**, liberando o uso das extensões específicas (androidModule, viewModel { ... }, injeção de classes do Android etc.).
+**Em resumo:** Sem o androidContext, o Koin enxerga apenas as definições puras de Kotlin. Ao fornecê-lo, você conecta o container de DI ao ambiente Android, habilitando recursos extras como: módulos Android (androidModule), integração com viewModel { ... } e a possibilidade de injetar classes que dependem diretamente do framework Android.
 
 * modules(appModule) carrega as definições de dependências que você declarou no módulo appModule.
 
@@ -81,9 +98,7 @@ ou diretamente:
 🔹 **Por que dentro da Application?**
 
 * A classe Application é criada antes de qualquer Activity ou Service.
-
 * Isso garante que todas as dependências estejam disponíveis desde o primeiro momento em que o app começar a rodar.
-
 * Depois da inicialização, qualquer parte da aplicação pode usar get() ou by inject() para recuperar dependências do Koin.
 
 🔹 **Alternativa: contextos isolados com `KoinApplication`**
@@ -97,16 +112,19 @@ Normalmente, quando você chama `startKoin { ... }`, o Koin cria um **contexto g
 Nesses casos, em vez de usar `startKoin`, você pode criar um **contexto local** com `koinApplication { ... }`.
 
 Exemplo:
+```
+val libraryModule = module {
+    single<MyService> { MyServiceImpl() }
+}
 
-val customKoin \= koinApplication **{**
+val customKoin = koinApplication {
+    modules(libraryModule)
+}
 
-modules(libraryModule)
+val service = customKoin.koin.get<MyService>()
+```
 
-**}**
-
-val service \= customKoin.koin.*get*\<MyService\>()
-
-Aqui:
+🔹 O que este código faz:
 
 * `koinApplication { ... }` cria uma instância **independente** de `KoinApplication`.
 * Você acessa as dependências usando `customKoin.koin.get<T>()` em vez de `get()` global.
@@ -114,251 +132,327 @@ Aqui:
 
 #### 3\) E como seria a injeção de dependencia do repository como singleton na mão, sem o uso de frameworks?
 
+```
 object ServiceLocator {  
-// Singleton manual  
-val taskRepository: TaskRepository by *lazy* **{**  
-TaskRepositoryImpl()  
-**}**
+    val taskRepository: TaskRepository by lazy {  
+        TaskRepositoryImpl()  
+    }
 
-fun provideTaskViewModel(): TaskViewModel {  
-return TaskViewModel(repository \= taskRepository)  
-}  
+    fun provideTaskViewModel(): TaskViewModel {  
+        return TaskViewModel(repository \= taskRepository)  
+    }  
 }
+```
 
-Uso:
-
-val *viewModel* \= ServiceLocator.provideTaskViewModel()
+🔹 Como usar:
+```
+val viewModel = ServiceLocator.provideTaskViewModel()
+```
 
 🔹 Explicação
-
 * `ServiceLocator` funciona como um **mini container** criado por você.
 * `by lazy` garante que `TaskRepositoryImpl()` só será instanciado uma vez (parecido com o `single` do Koin).
 * Quando precisar de um `TaskViewModel`, você chama `provideTaskViewModel()`, que passa o `repository` correto.
 
-| Com koin | Sem koin |
-| :---- | :---- |
-| single { TaskRepositoryImpl() } | `val taskRepository = TaskRepositoryImpl()` (ou `by lazy`) |
-| viewModel { TaskViewModel(get()) } | fun provideTaskViewModel() \= TaskViewModel(taskRepository) |
-| Usa `get()` para resolver dependências | Você mesmo passa o construtor (`TaskViewModel(repository)`) |
-| Container gerenciado pelo Koin | Container/ServiceLocator feito à mão |
+| Com koin                                | Sem koin |
+|:----------------------------------------| :---- |
+| `single { TaskRepositoryImpl() }`       | `val taskRepository = TaskRepositoryImpl()` (ou `by lazy`) |
+| `viewModel { TaskViewModel(get()) }`    | `fun provideTaskViewModel() \= TaskViewModel(taskRepository)` |
+| Usa `get()` para resolver dependências  | Você mesmo passa o construtor (`TaskViewModel(repository)`) |
+| Container gerenciado pelo Koin          | Container/ServiceLocator feito à mão |
 
 #### 4\) E como seria a injeção de dependencia do repository como factory na mão, sem o uso de frameworks?
 
 Com Koin (factory)
+```
+val appModule = module {  
+    factory<TaskRepository> { TaskRepositoryImpl() }  
+    viewModel { TaskViewModel(repository = get()) }  
+}
+```
+`Sempre que um TaskViewModel for criado, ele recebe um TaskRepositoryImpl novo.`
 
-val appModule \= module **{**  
-factory\<TaskRepository\> **{** TaskRepositoryImpl() **}**  
-viewModel **{** TaskViewModel(repository \= *get*()) **}**  
-**}**
+**Sem Koin — injeção manual (factory)**
 
-`Aqui, sempre que um TaskViewModel for criado, ele recebe um TaskRepositoryImpl novo.`
-
-Sem Koin — injeção manual (factory)
-
-Se você quisesse imitar esse comportamento **sem Koin**, teria que escrever algo como:
-
+Se você quisesse reproduzir este mesmo comportamento **sem o uso do koin**, teria que escrever algo como:
+```
 object ServiceLocator {  
-// Factory manual: cria um novo a cada chamada  
-fun provideTaskRepository(): TaskRepository {  
-return TaskRepositoryImpl()  
-}
+    fun provideTaskRepository(): TaskRepository {  
+        return TaskRepositoryImpl()  
+    }
 
-fun provideTaskViewModel(): TaskViewModel {  
-// Repara que aqui chamamos provideTaskRepository()  
-// \=\> ou seja, cada ViewModel terá um repository diferente  
-return TaskViewModel(repository \= provideTaskRepository())  
-}  
+    fun provideTaskViewModel(): TaskViewModel {  
+        return TaskViewModel(repository = provideTaskRepository())  
+    }  
 }
-
+```
 Uso:
-
-val *vm1* \= ServiceLocator.provideTaskViewModel()  
-val *vm2* \= ServiceLocator.provideTaskViewModel()
-
-// vm1.repository \!= vm2.repository (são instâncias diferentes)
+```
+val vm1 = ServiceLocator.provideTaskViewModel()  
+val vm2 = ServiceLocator.provideTaskViewModel()
+```
+`vm1.repository != vm2.repository (são instâncias diferentes)`
 
 | `Tipo` | `Koin` | `Manual` | `Comportamento` |
 | :---- | :---- | :---- | :---- |
-| `single` | `single { TaskRepositoryImpl() }` | `val taskRepository by lazy { TaskRepositoryImpl() }` | `Uma única instância em todo o app (singleton).` |
-| `factory` | `factory { TaskRepositoryImpl() }` | `fun provideTaskRepository() = TaskRepositoryImpl()` | `Uma nova instância a cada chamada` |
+| `single` | `single { <br/>TaskRepositoryImpl() <br/>}` | `val taskRepository by lazy { <br/>TaskRepositoryImpl()<br/> }` | `Uma única instância em todo o app (singleton).` |
+| `factory` | `factory { <br/>TaskRepositoryImpl() <br/>}` | `fun provideTaskRepository() = TaskRepositoryImpl()` | `Uma nova instância a cada chamada` |
 
 #### 5\) Qual é a principal diferença prática entre factory, single e scoped ?
 
 🔹 1\. factory  
-<img src="./android_factory.gif" width="300" height="600" />
-<img src="./ios_factory.gif" width="300" height="600" />
+
+<table>
+  <tr>
+    <th>Android</th>
+    <th>iOS</th>
+  </tr>
+  <tr>
+    <td><img src="./android_factory.gif" width="300" height="600" /></td>
+    <td><img src="./ios_factory.gif" width="300" height="600" /></td>
+  </tr>
+</table>
+
+➡️ O factory cria sempre um novo repositório a cada navegação, então os registros anteriores não são mantidos na memória — ao voltar, a lista de tarefas está zerada.
 
 🔹 2\. single  
-<img src="./android_single.gif" width="300" height="600" />
-<img src="./ios_single.gif" width="300" height="600" />
+
+<table>
+  <tr>
+    <th>Android</th>
+    <th>iOS</th>
+  </tr>
+  <tr>
+    <td><img src="./android_single.gif" width="300" height="600" /></td>
+    <td><img src="./ios_single.gif" width="300" height="600" /></td>
+  </tr>
+</table>
+
+➡️ O single garante que o TaskRepository seja compartilhado entre telas, mantendo as tarefas vivas na memória durante toda a navegação — diferente do factory, onde os dados se perdem a cada nova instância.
 
 #### 6\) Como seria a criação de testes unitários com Koin ?
 
 🔹 1\. Código de produção (com Koin)
 
-// Repository real  
+```
 interface TaskRepository {  
-fun getTasks(): List\<String\>  
+    fun add(todo: Task)
+    fun remove(id: String)
+    fun all(): List<Task> 
 }
-
+```
+```
 class TaskRepositoryImpl : TaskRepository {  
-override fun getTasks() \= *listOf*("Comprar pão", "Estudar KMP")  
+    private val items = mutableListOf<Task>()
+    override fun add(todo: Task) { items.add(todo) }
+    override fun remove(id: String) { items.removeAll { it.id == id } }
+    override fun all(): List<Task> = items.toList()
 }
+```
+```
+class TaskViewModel constructor(
+  private val repository: TaskRepository
+): ViewModel() {
+    private val scope = CoroutineScope(Dispatchers.Default)
 
-// ViewModel que depende do Repository  
-class TaskViewModel(private val repository: TaskRepository) {  
-fun loadTasks() \= repository.getTasks()  
+    private val _tasks = MutableStateFlow<List<Task>>(emptyList())
+    val tasks: StateFlow<List<Task>> get() = _tasks
+
+    init {
+        loadTasks()
+    }
+
+    fun addTask(title: String) {
+        scope.launch {
+            repository.add(Task(randomString(), title))
+            loadTasks()
+        }
+    }
+
+    fun removeTask(id: String) {
+        scope.launch {
+            repository.remove(id)
+            loadTasks()
+        }
+    }
+
+    private fun loadTasks() {
+        scope.launch {
+            _tasks.value = repository.all()
+        }
+    }
 }
+```
+``` 
+val appModule = module {
+    single<TaskRepository>(named("single")) { TaskRepositoryImpl() }
+    factory<TaskRepository>(named("factory")) { TaskRepositoryImpl() }
 
-// Módulo de produção  
-val *appModule* \= *module* **{**  
-single\<TaskRepository\> **{** TaskRepositoryImpl() **}**  
-factory **{** TaskViewModel(get()) **}**  
-**}**  
+    viewModel<TaskViewModel> {
+        TaskViewModel(repository = get(named("single")))
+    }
+}
+```
+
 🔹 2\. Teste sem Koin (injeção manual)
 
 Se você não tivesse Koin, teria que **criar manualmente o ViewModel com uma fake/mock**
-
+```
 class FakeTaskRepository : TaskRepository {
-
-override fun getTasks() \= *listOf*("Tarefa falsa 1", "Tarefa falsa 2")
-
+    override fun getTasks() = listOf("Tarefa falsa 1", "Tarefa falsa 2")    
 }
-
+```
+```
 @Test
-
-fun \`loadTasks deve retornar lista fake\`() {
-
-val fakeRepository \= FakeTaskRepository()
-
-val viewModel \= TaskViewModel(fakeRepository)
-
-val result \= viewModel.loadTasks()
-
-assertEquals(*listOf*("Tarefa falsa 1", "Tarefa falsa 2"), result)
-
+fun `loadTasks deve retornar lista fake`() {
+    val fakeRepository = FakeTaskRepository()
+    val viewModel = TaskViewModel(fakeRepository)
+    val result = viewModel.loadTasks()
+    assertEquals(listOf("Tarefa falsa 1", "Tarefa falsa 2"), result)
 }
+```
 
 🔹 3\. Teste com Koin (muito mais limpo)
 
 Com Koin, você pode **sobrescrever os módulos reais** dentro do teste:
-
+```
 class TaskViewModelTest : KoinTest {
+    private val testModule = module(override = true) {
+           single<TaskRepository> {** FakeTaskRepository() }
+    }
 
-// Módulo de teste (substitui o real)
+    @Before
+    fun setup() {
+        startKoin {
+            modules(testModule)
+        }
+    }
 
-private val testModule \= *module*(override \= true) **{**
+    @After
+    fun teardown() {
+        stopKoin()
+    }
 
-       single\<TaskRepository\> **{** FakeTaskRepository() **}**
-
-**}**
-
-@Before
-
-fun setup() {
-
-       startKoin **{**
-
-           modules(testModule) // só usamos o módulo fake
-
-       **}**
-
-}
-
-@After
-
-fun teardown() {
-
-       stopKoin()
+    @Test
+    fun `loadTasks deve retornar lista fake`() {
+           val viewModel: TaskViewModel by inject()
+           val result = viewModel.loadTasks()
+           assertEquals(*listOf*("Tarefa falsa 1", "Tarefa falsa 2"), result)
+    }
 
 }
-
-@Test
-
-fun \`loadTasks deve retornar lista fake\`() {
-
-       val viewModel: TaskViewModel by inject()
-
-       val result \= viewModel.loadTasks()
-
-       assertEquals(*listOf*("Tarefa falsa 1", "Tarefa falsa 2"), result)
-
-}
-
-}
+```
 
 ### **4\. Como seria na prática com KMP?**
 
 #### 1\) Configuração
 
-*libs.versions.toml*  
-\[versions\]  
-koin \= "4.1.1"
+`*libs.versions.toml*`
+```
+[versions]  
+koin = "4.1.1"
 
-\[libraries\]  
-koin-core \= { module \= "io.insert-koin:koin-core", version.ref \= "koin" }  
-koin-android \= { module \= "io.insert-koin:koin-android", version.ref \= "koin" }  
-koin-androidx-compose \= { module \= "io.insert-koin:koin-androidx-compose", version.ref \= "koin" }
-
+[libraries]  
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }  
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }  
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+```
 #### 2\) Conceito simples (Kotlin)
 
-interface TaskRepository {
-
-suspend fun add(todo: Task)
-
-suspend fun remove(id: String)
-
-suspend fun all(): List\<Task\>
-
+```
+interface TaskRepository {  
+    fun add(todo: Task)
+    fun remove(id: String)
+    fun all(): List<Task> 
 }
-
-class TaskRepositoryImpl : TaskRepository {
-
-private val items \= *mutableListOf*\<Task\>()
-
-override suspend fun add(todo: Task) { items.add(todo) }
-
-override suspend fun remove(id: String) { items.*removeAll* **{ it**.id \== id **}** }
-
-override suspend fun all(): List\<Task\> \= items.*toList*()
-
+```
+```
+class TaskRepositoryImpl : TaskRepository {  
+    private val items = mutableListOf<Task>()
+    override fun add(todo: Task) { items.add(todo) }
+    override fun remove(id: String) { items.removeAll { it.id == id } }
+    override fun all(): List<Task> = items.toList()
 }
+```
+```
+class TaskViewModel constructor(
+  private val repository: TaskRepository
+): ViewModel() {
+    private val scope = CoroutineScope(Dispatchers.Default)
 
-val *appModule* \= *module* **{**
+    private val _tasks = MutableStateFlow<List<Task>>(emptyList())
+    val tasks: StateFlow<List<Task>> get() = _tasks
 
-single\<TaskRepository\> **{** TaskRepositoryImpl() **}**
+    init {
+        loadTasks()
+    }
 
-*viewModel*\<TaskViewModel\> **{**
+    fun addTask(title: String) {
+        scope.launch {
+            repository.add(Task(randomString(), title))
+            loadTasks()
+        }
+    }
 
-       TaskViewModel(repository \= get\<TaskRepository\>())
+    fun removeTask(id: String) {
+        scope.launch {
+            repository.remove(id)
+            loadTasks()
+        }
+    }
 
-**}**
+    private fun loadTasks() {
+        scope.launch {
+            _tasks.value = repository.all()
+        }
+    }
+}
+```
+``` 
+val appModule = module {
+    single<TaskRepository>(named("single")) { TaskRepositoryImpl() }
+    factory<TaskRepository>(named("factory")) { TaskRepositoryImpl() }
 
-**}**
+    viewModel<TaskViewModel> {
+        TaskViewModel(repository = get(named("single")))
+    }
+}
+```
 
 Injeção no android
 
+```
 class TaskApp : Application() {
-
-override fun onCreate() {
-
-       super.onCreate()
-
-       *startKoin* **{**
-
-           *androidContext*(this@TaskApp)
-
-           modules(*appModule*)
-
-       **}**
-
+    override fun onCreate() {
+        super.onCreate()
+        startKoin {
+           androidContext*(this@TaskApp)
+           modules(appModule)
+        }
+    }
 }
 
+```
+
+Injeção KMP
+
+```
+@Composable
+@Preview
+fun App() {
+    KoinApplication(
+        application = {
+            modules(appModule)
+        }
+    ) {
+        MaterialTheme {
+            NavGraph()
+        }
+    }
 }
+```
 
-Injeção no IOS
-
-adicionar exemplo …
+➡️ Essa injeção com KoinApplication inicializa o contêiner de dependências direto na árvore de Compose, garantindo que o KMP funcione de forma unificada no Android e no iOS, mesmo sem o Application global que só existe no Android.
 
 #### 3\) Pontos importantes
 
@@ -377,7 +471,7 @@ Kotlin Multiplatform (KMP) impõe algumas considerações:
 
 ---
 
-#### 3\) Anti-padrões
+#### 4\) Anti-padrões
 
 * **Service Locator como padrão**: chamar `GlobalContext.get().get()` em todo o lugar esconde dependências e dificulta testes.
 * **Exposição do container em camadas internas**: não passe o container pelo modelo/domain.
@@ -386,10 +480,9 @@ Kotlin Multiplatform (KMP) impõe algumas considerações:
 
 ---
 
-### **5\. Estrutura do Projeto (exemplo simplificado)**
+### **5\. Estrutura do Projeto**
 
 📂 shared
-
 * data
   * repository
     * TaskRepositoryImpl.kt

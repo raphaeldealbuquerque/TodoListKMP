@@ -154,12 +154,12 @@ val viewModel = ServiceLocator.provideTaskViewModel()
 * `by lazy` garante que `TaskRepositoryImpl()` só será instanciado uma vez (parecido com o `single` do Koin).
 * Quando precisar de um `TaskViewModel`, você chama `provideTaskViewModel()`, que passa o `repository` correto.
 
-| Com koin                                | Sem koin |
-|:----------------------------------------| :---- |
-| `single { TaskRepositoryImpl() }`       | `val taskRepository = TaskRepositoryImpl()` (ou `by lazy`) |
-| `viewModel { TaskViewModel(get()) }`    | `fun provideTaskViewModel() \= TaskViewModel(taskRepository)` |
-| Usa `get()` para resolver dependências  | Você mesmo passa o construtor (`TaskViewModel(repository)`) |
-| Container gerenciado pelo Koin          | Container/ServiceLocator feito à mão |
+| Com koin                                | Sem koin                                                     |
+|:----------------------------------------|:-------------------------------------------------------------|
+| `single { TaskRepositoryImpl() }`       | `val taskRepository = TaskRepositoryImpl()`                  |
+| `viewModel { TaskViewModel(get()) }`    | `fun provideTaskViewModel() = TaskViewModel(taskRepository)` |
+| Usa `get()` para resolver dependências  | Você mesmo passa o construtor (`TaskViewModel(repository)`)  |
+| Container gerenciado pelo Koin          | Container/ServiceLocator feito à mão                         |
 
 #### 4\) E como seria a injeção de dependencia do repository como factory na mão, sem o uso de frameworks?
 

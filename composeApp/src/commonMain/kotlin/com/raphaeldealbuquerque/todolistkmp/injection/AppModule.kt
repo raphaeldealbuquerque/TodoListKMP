@@ -8,14 +8,20 @@ import com.raphaeldealbuquerque.todolistkmp.domain.usecase.RemoveTaskUseCase
 import com.raphaeldealbuquerque.todolistkmp.presentation.viewmodel.TaskViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
+import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+val libraryModule = module {
+    single<TaskRepository> { TaskRepositoryImpl() }
+}
+val customKoin = koinApplication {
+    modules(libraryModule)
+}
 
 val appModule = module {
-    single<TaskRepository> { TaskRepositoryImpl() }
 
-    factory { AddTaskUseCase(get()) }
-    factory { RemoveTaskUseCase(get()) }
-    factory { GetTasksUseCase(get()) }
+    factory { AddTaskUseCase(customKoin.koin.get<TaskRepository>()) }
+    factory { RemoveTaskUseCase(customKoin.koin.get<TaskRepository>()) }
+    factory { GetTasksUseCase(customKoin.koin.get<TaskRepository>()) }
 
     viewModel<TaskViewModel> {
         TaskViewModel(

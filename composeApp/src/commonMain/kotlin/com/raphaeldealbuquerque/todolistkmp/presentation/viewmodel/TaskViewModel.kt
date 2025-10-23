@@ -2,6 +2,9 @@ package com.raphaeldealbuquerque.todolistkmp.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.raphaeldealbuquerque.todolistkmp.domain.repository.TaskRepository
+import com.raphaeldealbuquerque.todolistkmp.domain.usecase.AddTaskUseCase
+import com.raphaeldealbuquerque.todolistkmp.domain.usecase.GetTasksUseCase
+import com.raphaeldealbuquerque.todolistkmp.domain.usecase.RemoveTaskUseCase
 import com.raphaeldealbuquerque.todolistkmp.model.Task
 import com.raphaeldealbuquerque.todolistkmp.randomString
 import kotlinx.coroutines.CoroutineScope
@@ -11,7 +14,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class TaskViewModel constructor(
-  private val repository: TaskRepository
+    private val addTaskUseCase: AddTaskUseCase,
+    private val removeTaskUseCase: RemoveTaskUseCase,
+    private val getTasksUseCase: GetTasksUseCase
 ): ViewModel() {
     private val scope = CoroutineScope(Dispatchers.Default)
 
@@ -24,21 +29,21 @@ class TaskViewModel constructor(
 
     fun addTask(title: String) {
         scope.launch {
-            repository.add(Task(randomString(), title))
+            addTaskUseCase(title)
             loadTasks()
         }
     }
 
     fun removeTask(id: String) {
         scope.launch {
-            repository.remove(id)
+            removeTaskUseCase(id)
             loadTasks()
         }
     }
 
     private fun loadTasks() {
         scope.launch {
-            _tasks.value = repository.all()
+            _tasks.value = getTasksUseCase()
         }
     }
 }

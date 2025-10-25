@@ -1,9 +1,10 @@
 package com.raphaeldealbuquerque.todolistkmp.presentation.components
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -12,7 +13,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,10 +29,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.raphaeldealbuquerque.todolistkmp.model.Task
 import com.raphaeldealbuquerque.todolistkmp.presentation.viewmodel.TaskViewModel
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -51,7 +51,7 @@ fun MainScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TaskListContent(
+fun TaskListContent(
     tasks: List<Task> = emptyList(),
     onAddTask: (String) -> Unit = {},
     onRemoveTask: (String) -> Unit = {},
@@ -61,62 +61,60 @@ private fun TaskListContent(
 
     MaterialTheme {
         Scaffold(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White),
+            containerColor = Color.Transparent,
             topBar = {
                 TopAppBar(
+                    modifier = Modifier.background(Color.White),
                     title = { Text("Lista de Tarefas") },
                     actions = {
                         IconButton(onClick = onNavigateToStats) {
-                            Icon(
-                                imageVector = Icons.Default.Info,
-                                contentDescription = "Estatísticas"
-                            )
+                            Icon(Icons.Default.Info, contentDescription = "Estatísticas")
                         }
-                    }
+                    },
+                    colors = androidx.compose.material3.TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.White
+                    )
                 )
             }
         ) { paddingValues ->
             Column(
                 modifier = Modifier
                     .padding(paddingValues)
-                    .padding(16.dp)
             ) {
-                Row {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                ) {
                     TextField(
                         value = text,
                         onValueChange = { text = it },
                         label = { Text("Nova tarefa") },
                         modifier = Modifier.weight(1f)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(Modifier.width(8.dp))
                     Button(onClick = {
                         if (text.isNotBlank()) {
                             onAddTask(text)
                             text = ""
                         }
-                    }) {
-                        Text("Adicionar")
-                    }
+                    }) { Text("Adicionar") }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
 
-                LazyColumn {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
                     items(tasks) { task ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(task.title)
-                            IconButton(onClick = {
-                                onRemoveTask(task.id)
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Delete,
-                                    contentDescription = "Remover"
-                                )
-                            }
-                        }
+                        TaskItem(
+                            task = task,
+                            onRemoveTask = onRemoveTask
+                        )
                     }
                 }
             }
@@ -124,8 +122,8 @@ private fun TaskListContent(
     }
 }
 
-@Preview
 @Composable
-private fun TaskListContentPreview() {
-    TaskListContent()
-}
+expect fun TaskItem(
+    task: Task,
+    onRemoveTask: (String) -> Unit
+)

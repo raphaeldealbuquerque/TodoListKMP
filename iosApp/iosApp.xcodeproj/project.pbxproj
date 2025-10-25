@@ -47,6 +47,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C75F7960D4DE97C408875016 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CCE20D373C810F329C6711A8 /* TodoListKMP.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		CF6F17A8785046ED3187A789 = {
 			isa = PBXGroup;
 			children = (
@@ -54,14 +62,6 @@
 				21716ABA7F901907825B4E71 /* iosApp */,
 				C75F7960D4DE97C408875016 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		C75F7960D4DE97C408875016 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				CCE20D373C810F329C6711A8 /* TodoListKMP.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -167,6 +167,62 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		63266192C04DB02E9AEC218D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = "${TEAM_ID}";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iosApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8976640DF5EAC7DE21091E9B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = "${TEAM_ID}";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iosApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		C4CD7F3BEA108A8C74A1D13E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = FD0E509F82681F39B6D15163 /* Configuration */;
@@ -290,79 +346,23 @@
 			};
 			name = Release;
 		};
-		8976640DF5EAC7DE21091E9B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = arm64;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
-				DEVELOPMENT_TEAM = "${TEAM_ID}";
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = iosApp/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		63266192C04DB02E9AEC218D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = arm64;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
-				DEVELOPMENT_TEAM = "${TEAM_ID}";
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = iosApp/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		50B6DD29316F33D84AFD1D95 /* Build configuration list for PBXProject "iosApp" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C4CD7F3BEA108A8C74A1D13E /* Debug */,
-				E2EA067BA032F71CA85F8684 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		13DC7BCF994161F7B92329DD /* Build configuration list for PBXNativeTarget "iosApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8976640DF5EAC7DE21091E9B /* Debug */,
 				63266192C04DB02E9AEC218D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		50B6DD29316F33D84AFD1D95 /* Build configuration list for PBXProject "iosApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C4CD7F3BEA108A8C74A1D13E /* Debug */,
+				E2EA067BA032F71CA85F8684 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

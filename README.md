@@ -1,35 +1,49 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# Estudos Kotlin Multiplatform
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+Este projeto é destinado ao desenvolvimento de **estudos, experimentos e artigos** relacionados a **Kotlin Multiplatform (KMP)**, com foco em compartilhar conhecimento e explorar práticas de desenvolvimento para Android, iOS e outros targets suportados pelo KMP.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+Ele contém exemplos de código compartilhado entre plataformas, integração com Compose Multiplatform e pontos específicos de cada plataforma para aprendizado prático.
 
-### Build and Run Android Application
+## Estrutura do Projeto
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+* **[/composeApp](./composeApp/src)** – Código compartilhado entre aplicações Compose Multiplatform.
+  - **[commonMain](./composeApp/src/commonMain/kotlin)** – Código comum a todos os targets.
+  - **[iosMain](./composeApp/src/iosMain/kotlin)** – Código específico para iOS
+  - **[androidMain](./composeApp/src/androidMain/kotlin)** – Código específico para Android.
+  - Outras pastas seguem o mesmo padrão, para isolar código específico de cada plataforma.
 
-### Build and Run iOS Application
+* **[/iosApp](./iosApp/iosApp)** – Aplicação iOS. Mesmo que a interface seja compartilhada via Compose Multiplatform, é necessário este ponto de entrada para execução no Xcode. Também é o local para código SwiftUI específico.
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+## Como Executar
 
----
+### Android
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+Para rodar a versão de desenvolvimento do app Android:
+- **macOS/Linux**
+```bash
+./gradlew :composeApp:assembleDebug
+```
+
+- **Windows**
+```bash
+./gradlew.bat :composeApp:assembleDebug
+```
+
+### iOS
+Para rodar a versão de desenvolvimento do app iOS:
+- Abra o projeto `iosApp/iosApp.xcodeproj` no Xcode e execute a aplicação.
+- Também é possível usar a configuração de execução pelo IDE, caso o suporte a Kotlin/Native esteja configurado.
+
+## Objetivo do Projeto
+- Servir como laboratório de estudos sobre Kotlin Multiplatform.
+- Compartilhar exemplos práticos e boas práticas de desenvolvimento multiplataforma.
+- Documentar aprendizados e desafios encontrados durante o desenvolvimento com KMP.
+- Explorar integrações com bibliotecas populares e frameworks, como Compose Multiplatform.
+- Fornecer uma base para artigos e tutoriais sobre desenvolvimento multiplataforma com Kotlin.
+- Explorar a interoperabilidade entre plataformas usando Compose Multiplatform, SwiftUI e APIs nativas.
+
+### Links úteis 
+- [Documentação Oficial do Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html)
+- [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)
+- [Kotlin/Native](https://kotlinlang.org/docs/native-overview.html)
+- [Kotlin Multiplatform Mobile (KMM)](https://kotlinlang.org/docs/mobile/home.html))
